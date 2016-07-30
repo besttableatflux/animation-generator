@@ -20,7 +20,6 @@ def search(query):
         url,
         params=params
     )
-    print(res.request.url)
     res = res.json()
 
     search = res['search']
