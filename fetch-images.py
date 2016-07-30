@@ -4,6 +4,7 @@ import os
 import random
 import argparse
 import requests
+from itertools import islice, count
 
 parser = argparse.ArgumentParser(description='Search Trove API')
 parser.add_argument('query', metavar='Q', type=str,
@@ -18,25 +19,19 @@ args = parser.parse_args()
 # response['response']['zone'][0]['records']['next'] - URL path to next page (includes &s=xx)
 # response['response']['zone'][0]['records']['work'] - actual list of results ("work"?!)
 
-class TroveAPI(object):
-    def __init__(self, query):
-        self.useful_images = []
-        self.page = 0
-        self.query = query
 
-    def fetch(self):
+def fetch(query):
+    for page in count(0):
         params = {
             "key": os.environ['TROVE_API_KEY'],
-            "q": self.query,
+            "q": query,
             "zone": "picture",
             "encoding": "json"
         }
 
-        if self.page > 0:
+        if page > 0:
             # TODO: get page size from previous results?
-            params['s'] = 20 * self.page
-
-        self.page += 1
+            params['s'] = 20 * page
 
         r = requests.get('http://api.trove.nla.gov.au/result', params=params)
         response = r.json()
@@ -55,24 +50,25 @@ class TroveAPI(object):
             if 'identifier' not in result:
                 continue
 
-            good_link = ''
-            for link in result['identifier']:
-                if link['linktype'] == 'fulltext':
-                    good_link = link['value']
-
+            good_link = next(
+                (
+                    link['value']
+                    for link in result['identifier']
+                    if link['linktype'] == 'fulltext'
+                ),
+                ''
+            )
             if good_link != '':
-                self.useful_images.append(good_link)
-
-    def fetchAtLeast(self, count):
-        while len(self.useful_images) < count:
-            t.fetch()
-
-    def get_images(self):
-        return random.sample(self.useful_images, 5)
+                yield good_link
 
 
-t = TroveAPI(args.query)
-t.fetchAtLeast(20)
+def fetchAtLeast(query, count):
+    return islice(fetch(query), count)
+
+
+def get_images(query, sample_size=5, n=20):
+    return random.sample(fetchAtLeast(query, n), sample_size)
+
 
 # pick off random 5? of the first 20 to meet our thresholds
-print(t.get_images())
+print(get_images(args.query))
