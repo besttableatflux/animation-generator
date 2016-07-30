@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 import random
 import argparse
@@ -73,5 +75,4 @@ t = TroveAPI(args.query)
 t.fetchAtLeast(20)
 
 # pick off random 5? of the first 20 to meet our thresholds
-print t.get_images()
-
+print(t.get_images())
