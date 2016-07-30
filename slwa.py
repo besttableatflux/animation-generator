@@ -29,7 +29,7 @@ def get_image(images):
 
 
 def weight(query, row):
-    if row.Summary:
+    if not pd.isnull(row.Summary):
         r_desc = ratio(row.Summary, query)
     else:
         r_desc = 0
@@ -55,11 +55,11 @@ def main(query=sys.argv[1]):
     for row in rows:
         image = get_image(row["URLS for images"])
 
-        description = (
-            row.Summary or
-            row["Description of original object"] or
-            ''
-        )
+        description = row.Summary
+        if pd.isnull(description):
+            description = row["Description of original object"]
+        if pd.isnull(description):
+            description = ''
 
         sys.stdout.write(
             '{}\n'.format(json.dumps({
