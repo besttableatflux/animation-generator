@@ -33,7 +33,8 @@ def search(query):
                 "originalImageUrl": (
                     result.get('large_thumbnail_url') or
                     result.get('thumbnail_url')
-                )
+                ),
+                'source_url': result['source_url']
             }
             if not result["originalImageUrl"]:
                 continue
