@@ -1,0 +1,1 @@
+__import__("flickr_search").client("24785917@N03", "Powerhouse Museum")

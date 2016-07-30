@@ -1,0 +1,1 @@
+__import__("flickr_search").client("30115723@N02", "Australian War Memorial")
