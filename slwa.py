@@ -1,7 +1,8 @@
 import sys
-from itertools import islice
+import json
+from itertools import islice, groupby
 from operator import itemgetter
-from os.path import exists, basename
+from os.path import exists, basename, splitext
 
 import requests
 import pandas as pd
@@ -19,24 +20,40 @@ if not exists(FILENAME):
         fh.write(requests.get(URL).content)
 
 
+def get_image(images):
+    key = lambda filename: splitext(filename)[1]
+
+    for image in images:
+        if key(image) == '.jpg':
+            return image
+
+
 def main(query=sys.argv[1]):
     df = pd.read_csv(FILENAME, encoding='latin1')
 
     df['URLS for images'] = df['URLS for images'].str.split(';')
 
-    key = lambda row: ratio(row.Title, query)
-
-    rows = map(itemgetter(1), df.iterrows())
-
-    rows = sorted(rows, key=key)
-
-    rows = islice(rows, 100)
+    rows = map(itemgetter(1), df.iterrows())  # get rows
+    rows = sorted(rows, key=lambda row: ratio(row.Title, query))  # rank rows
+    rows = islice(rows, 100)  # limit rows
 
     for row in rows:
+        image = get_image(row["URLS for images"])
+
+        description = (
+            row.Summary or
+            row["Description of original object"] or
+            ''
+        )
+
         sys.stdout.write(
-            '{}\n'.format(
-                row.to_json()
-            )
+            '{}\n'.format(json.dumps({
+                'title': row.Title,
+                'description': description,
+                'source': 'SLWA Pictorial',
+                'original': image,
+                'colourised': None
+            }))
         )
 
 if __name__ == '__main__':
