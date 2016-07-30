@@ -66,8 +66,8 @@ def main(query=sys.argv[1]):
                 'title': row.Title,
                 'description': description,
                 'source': 'SLWA Pictorial',
-                'original': image,
-                'colourised': None
+                'originalImageUrl': image,
+                'colourisedImageUrl': None
             }))
         )
 
