@@ -1,5 +1,4 @@
 import os
-import urllib
 import random
 import argparse
 import requests
@@ -37,9 +36,7 @@ class TroveAPI(object):
 
         self.page += 1
 
-        query_string = urllib.urlencode(params)
-
-        r = requests.get('http://api.trove.nla.gov.au/result?{}'.format(query_string))
+        r = requests.get('http://api.trove.nla.gov.au/result', params=params)
         response = r.json()
 
         for result in response['response']['zone'][0]['records']['work']:
