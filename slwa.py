@@ -34,7 +34,7 @@ def main(query=sys.argv[1]):
     df['URLS for images'] = df['URLS for images'].str.split(';')
 
     rows = map(itemgetter(1), df.iterrows())  # get rows
-    rows = sorted(rows, key=lambda row: ratio(row.Title, query))  # rank rows
+    rows = sorted(rows, key=lambda row: ratio(row.Title, query), reverse=True)  # rank rows
     rows = islice(rows, 100)  # limit rows
 
     for row in rows:
