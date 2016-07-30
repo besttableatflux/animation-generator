@@ -51,9 +51,12 @@ def fetch(query):
             raise Exceeded
         response = r.json()
 
-        for result in response['response']['zone'][0]['records']['work']:
+        records = response['response']['zone'][0]['records']
 
+        if 'work' not in records:
+            return
 
+        for result in records['work']:
             # arbitrary score threshold, for some searches with lots of results (e.g. "dogs")
             # scores as low as 0.2 are still good, for others the threshold should be 3 or 4
             if 'relevance' not in result or float(result['relevance']['score']) < 1:
