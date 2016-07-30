@@ -93,7 +93,6 @@ def fetch(query):
                     "description": description,
                     "source": urlparse(good_link).hostname,
                     "originalImageUrl": link,
-                    "colourisedImageUrl": None
                 }
 
 

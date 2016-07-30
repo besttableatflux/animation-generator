@@ -67,7 +67,6 @@ def main(query=sys.argv[1]):
             'description': description,
             'source': 'SLWA Pictorial',
             'originalImageUrl': image,
-            'colourisedImageUrl': None
         })
 
     print(json.dumps(valid_rows))
