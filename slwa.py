@@ -28,13 +28,28 @@ def get_image(images):
             return image
 
 
+def weight(query, row):
+    if row.Summary:
+        r_desc = ratio(row.Summary, query)
+    else:
+        r_desc = 0
+
+    r_title = ratio(row.Title, query)
+
+    return r_desc + (r_title * 1.5)
+
+
 def main(query=sys.argv[1]):
     df = pd.read_csv(FILENAME, encoding='latin1')
 
     df['URLS for images'] = df['URLS for images'].str.split(';')
 
     rows = map(itemgetter(1), df.iterrows())  # get rows
-    rows = sorted(rows, key=lambda row: ratio(row.Title, query), reverse=True)  # rank rows
+    rows = sorted(
+        rows,
+        key=lambda row: weight(query, row),
+        reverse=True
+    )  # rank rows
     rows = islice(rows, 100)  # limit rows
 
     for row in rows:
