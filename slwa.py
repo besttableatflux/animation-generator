@@ -52,6 +52,7 @@ def main(query=sys.argv[1]):
     )  # rank rows
     rows = islice(rows, 100)  # limit rows
 
+    valid_rows = []
     for row in rows:
         image = get_image(row["URLS for images"])
 
@@ -61,15 +62,16 @@ def main(query=sys.argv[1]):
         if pd.isnull(description):
             description = ''
 
-        sys.stdout.write(
-            '{}\n'.format(json.dumps({
-                'title': row.Title,
-                'description': description,
-                'source': 'SLWA Pictorial',
-                'originalImageUrl': image,
-                'colourisedImageUrl': None
-            }))
-        )
+        valid_rows.append({
+            'title': row.Title,
+            'description': description,
+            'source': 'SLWA Pictorial',
+            'originalImageUrl': image,
+            'colourisedImageUrl': None
+        })
+
+    print(json.dumps(valid_rows))
+
 
 if __name__ == '__main__':
     main()
