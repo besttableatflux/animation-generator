@@ -25,7 +25,7 @@ def search(query):
     search = res['search']
 
     for result in search['results']:
-        if 'All rights reserved' not in result['Usage']:
+        if 'All rights reserved' not in result['usage']:
             result = {
                 "title": result['title'],
                 "description": result['description'],
