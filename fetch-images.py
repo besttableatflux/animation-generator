@@ -75,7 +75,7 @@ def fetchAtLeast(query, count):
 
 
 def get_images(query, sample_size=5, n=20):
-    return random.sample(fetchAtLeast(query, n), sample_size)
+    return random.sample(list(fetchAtLeast(query, n)), sample_size)
 
 
 # pick off random 5? of the first 20 to meet our thresholds
