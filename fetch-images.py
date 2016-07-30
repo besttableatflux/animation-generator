@@ -1,6 +1,8 @@
 from __future__ import print_function
 
 import os
+import sys
+import json
 import random
 import argparse
 import requests
@@ -79,4 +81,5 @@ def get_images(query, sample_size=5, n=20):
 
 
 # pick off random 5? of the first 20 to meet our thresholds
-print(get_images(args.query))
+for image in get_images(args.query):
+    sys.stdout.write('{}\n'.format(json.dumps(image)))
