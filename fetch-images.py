@@ -90,8 +90,8 @@ def fetch(query):
                     "title": result['title'],
                     "description": description,
                     "source": urlparse(good_link).hostname,
-                    "original": good_link,
-                    "colourisedImage": None
+                    "originalImageUrl": link,
+                    "colourisedImageUrl": None
                 }
 
 
