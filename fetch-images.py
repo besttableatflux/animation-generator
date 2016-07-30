@@ -6,6 +6,7 @@ import json
 import random
 import argparse
 import requests
+from urllib.parse import urlparse
 from itertools import islice, count
 
 parser = argparse.ArgumentParser(description='Search Trove API')
@@ -67,6 +68,11 @@ def fetch(query):
                 ),
                 ''
             )
+
+            if urlparse(good_link).hostname == 'www.digitalpast.org':
+                # expired domain
+                continue
+
             if good_link != '':
                 yield good_link
 
