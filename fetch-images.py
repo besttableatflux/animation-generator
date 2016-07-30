@@ -9,6 +9,9 @@ import requests
 from urllib.parse import urlparse
 from itertools import islice, count
 
+from lxml.html import fromstring
+from lxml.etree import strip_tags
+
 parser = argparse.ArgumentParser(description='Search Trove API')
 parser.add_argument('query', metavar='Q', type=str,
                     help='search query')
@@ -74,7 +77,19 @@ def fetch(query):
                 continue
 
             if good_link != '':
-                yield good_link
+                description = result.get('snippet')
+                if description:
+                    description = strip_tags(fromstring(description))
+                else:
+                    description = ''
+
+                yield {
+                    "title": result['title'],
+                    "description": description,
+                    "source": urlparse(good_link).hostname,
+                    "original": good_link,
+                    "colourisedImage": None
+                }
 
 
 def fetchAtLeast(query, count):
