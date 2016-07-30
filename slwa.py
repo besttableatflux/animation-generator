@@ -25,7 +25,8 @@ def generate_index():
     schema = Schema(
         title=TEXT(stored=True),
         image=ID(stored=True),
-        description=TEXT(stored=True)
+        description=TEXT(stored=True),
+        recordNumber=TEXT(stored=True)
     )
     ix = create_in("indexdir", schema)
     writer = ix.writer()
@@ -48,7 +49,8 @@ def generate_index():
         writer.add_document(
             title=row.Title,
             image=image,
-            description=description
+            description=description,
+            recordNumber=row['Bibliographic Record number']
         )
 
     writer.commit()
@@ -86,6 +88,9 @@ def main(query=sys.argv[1]):
             'description': row['description'],
             'source': 'SLWA Pictorial',
             'originalImageUrl': row['image'],
+            'source_url': 'http://catalogue.slwa.wa.gov.au/record={}'.format(
+                row['recordNumber'][:-1]
+            )
         })
 
     print(json.dumps(valid_rows))
