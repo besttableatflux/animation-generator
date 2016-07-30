@@ -7,27 +7,20 @@ from itertools import islice, chain
 
 
 def for_account(api, query, username, uid):
-    for image in api.walk(user_id=uid, text=query):
-        image = image.attrib
-        title = image['title']
-        photo_id = image['id']
+    for image in api.walk(user_id=uid, text=query,
+                          extras='description,license,url_l'):
+        meta = image.attrib
+        title = meta['title']
 
-        info = api.photos.getInfo(photo_id=photo_id)
-        description = info.find('.//description').text
+        description = image.find('.//description').text
         description = fromstring(description)
         description = ' '.join(description.itertext())
-
-        sizes = api.photos.getSizes(photo_id=photo_id)
-        sizes = {
-            size.attrib['label']: size.attrib['source']
-            for size in sizes[0]
-        }
 
         yield {
             "title": title,
             "description": description,
             "source": '{} Flickr'.format(username),
-            "originalImageUrl": sizes['Large']
+            "originalImageUrl": meta['url_l']
         }
 
 
