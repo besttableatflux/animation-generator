@@ -43,8 +43,6 @@ def generate_index():
 
         description = row.Summary
         if pd.isnull(description):
-            description = row["Description of original object"]
-        if pd.isnull(description):
             description = ''
 
         writer.add_document(
