@@ -3,7 +3,7 @@
 # - sudo apt-get install libxml2-dev libxslt-dev
 # - sudo pip install requests lxml pandas fuzzywuzzy
 
-SERVERS = ( 52.42.187.96 52.41.100.249 )
+SERVERS=( 52.42.187.96 52.41.100.249 )
 
 for SERVER in "${SERVERS[@]}"
 do
