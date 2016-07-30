@@ -24,25 +24,25 @@ def search(query):
 
     search = res['search']
 
-    results = [
-        {
-            "title": result['title'],
-            "description": result['description'],
-            "source": result['collection'][0],
-            "originalImageUrl": (
-                result.get('large_thumbnail_url') or
-                result.get('thumbnail_url')
-            )
-        }
-        for result in search['results']
-        if 'All rights reserved' not in result['Usage']
-    ]
+    for result in search['results']:
+        if 'All rights reserved' not in result['Usage']:
+            result = {
+                "title": result['title'],
+                "description": result['description'],
+                "source": result['collection'][0],
+                "originalImageUrl": (
+                    result.get('large_thumbnail_url') or
+                    result.get('thumbnail_url')
+                )
+            }
+            if not result["originalImageUrl"]:
+                continue
 
-    print(json.dumps(results))
+            yield result
 
 
 def main(query=sys.argv[1]):
-    search(query)
+    print(json.dumps(list(search(query))))
 
 
 if __name__ == '__main__':
