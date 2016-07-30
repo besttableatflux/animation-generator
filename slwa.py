@@ -83,7 +83,6 @@ def main(query=sys.argv[1]):
     for row in get_index(query):
         if 'image' not in row:
             continue
-        print(row)
         valid_rows.append({
             'title': row['title'],
             'description': row['description'],
