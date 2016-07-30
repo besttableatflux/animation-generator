@@ -22,6 +22,10 @@ args = parser.parse_args()
 # response['response']['zone'][0]['records']['work'] - actual list of results ("work"?!)
 
 
+class Exceeded(Exception):
+    pass
+
+
 def fetch(query):
     # arbitrary date for images likely to be black & white, and unlikely to be copyrighted
     # query += ' date:[1900 TO 1950]'
@@ -39,6 +43,8 @@ def fetch(query):
             params['s'] = 20 * page
 
         r = requests.get('http://api.trove.nla.gov.au/result', params=params)
+        if 'Quota of 100 requests per minute has been exceeded.' in r.text:
+            raise Exceeded
         response = r.json()
 
         for result in response['response']['zone'][0]['records']['work']:
