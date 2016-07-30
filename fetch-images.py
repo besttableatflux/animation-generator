@@ -23,6 +23,9 @@ args = parser.parse_args()
 
 
 def fetch(query):
+    # arbitrary date for images likely to be black & white, and unlikely to be copyrighted
+    # query += ' date:[1900 TO 1950]'
+
     for page in count(0):
         params = {
             "key": os.environ['TROVE_API_KEY'],
@@ -39,17 +42,7 @@ def fetch(query):
         response = r.json()
 
         for result in response['response']['zone'][0]['records']['work']:
-            # arbitrary date for images likely to be black & white, and unlikely to be copyrighted
-            if 'issued' not in result:
-                continue
 
-            issued = result['issued']
-            if isinstance(issued, str) and '-' in issued:
-                issued = issued.split('-')[-1]
-
-            if issued:
-                if int(issued) > 1946:
-                    continue
 
             # arbitrary score threshold, for some searches with lots of results (e.g. "dogs")
             # scores as low as 0.2 are still good, for others the threshold should be 3 or 4
