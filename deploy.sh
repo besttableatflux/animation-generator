@@ -19,3 +19,4 @@ do
       # cd information-acquisition
 
 REMOTE_COMMANDS
+done
