@@ -87,19 +87,20 @@ def get_image(images):
 
 
 def main(query=sys.argv[1]):
-    valid_rows = []
-    for row in get_index(query):
-        if 'image' not in row:
-            continue
-        valid_rows.append({
+    valid_rows = [
+        {
             'title': row['title'],
             'description': row['description'],
             'source': 'SLWA Pictorial',
             'originalImageUrl': row['image'],
             'source_url': 'http://catalogue.slwa.wa.gov.au/record={}'.format(
                 row['recordNumber'][:-1]
+                # last digit is check digit
             )
-        })
+        }
+        for row in get_index(query)
+        if 'image' in row
+    ]
 
     print(json.dumps(valid_rows))
 
