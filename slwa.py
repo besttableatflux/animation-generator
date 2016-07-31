@@ -9,7 +9,7 @@ from os.path import exists, basename, splitext
 import six
 import requests
 import pandas as pd
-from whoosh.qparser import QueryParser
+from whoosh.qparser import MultifieldParser
 from whoosh.fields import Schema, TEXT, ID
 from whoosh.index import create_in, open_dir
 
@@ -74,7 +74,10 @@ def get_index(query):
             raise
 
     with ix.searcher() as searcher:
-        query = QueryParser('title', ix.schema).parse(query)
+        query = MultifieldParser(
+            ['title', 'description'],
+            ix.schema
+        ).parse(query)
         return list(map(dict, searcher.search(query, limit=50)))
 
 
