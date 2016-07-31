@@ -16,7 +16,9 @@ do
       sudo rm -rf information-acquisition
 
       git clone git@github.com:colourful-past/information-acquisition.git
-      # cd information-acquisition
+
+      cd information-acquisition
+      sudo pip install -r requirements.txt
 
 REMOTE_COMMANDS
 done
