@@ -2,6 +2,8 @@ import os
 import sys
 import json
 from itertools import islice
+
+from lxml.html import fromstring
 from flickrapi import FlickrAPI
 
 
@@ -19,6 +21,7 @@ def for_account(api, query, username, uid):
 
         description = image.find('.//description')
         description = ' '.join(description.itertext())
+        description = ' '.join(fromstring(description).itertext())
 
         image = next(
             meta[key]
