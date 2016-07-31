@@ -3,6 +3,7 @@ import sys
 import json
 from os.path import exists, basename, splitext
 
+import six
 import requests
 import pandas as pd
 from whoosh.qparser import QueryParser
@@ -47,10 +48,10 @@ def generate_index():
             description = ''
 
         writer.add_document(
-            title=row.Title,
-            image=image,
-            description=description,
-            recordNumber=row['Bibliographic Record number']
+            title=six.text_type(row.Title),
+            image=six.text_type(image),
+            description=six.text_type(description),
+            recordNumber=six.text_type(row['Bibliographic Record number'])
         )
 
     writer.commit()
