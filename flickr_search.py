@@ -13,11 +13,11 @@ SIZES = (
     'url_o', 'url_l', 'url_c', 'url_z', 'url_n',
     'url_m', 'url_q', 'url_s', 'url_t', 'url_sq'
 )
+EXTRAS = ('description', 'license') + SIZES
 
 
 def for_account(api, query, username, uid):
-    for image in api.walk(user_id=uid, text=query,
-                          extras='description,license,' + ','.join(SIZES)):
+    for image in api.walk(user_id=uid, text=query, extras=','.join(EXTRAS)):
         meta = image.attrib
         title = meta['title']
 
