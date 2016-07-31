@@ -37,7 +37,7 @@ def for_account(api, query, username, uid):
             "source": '{} Flickr'.format(username),
             "originalImageUrl": image,
             "source_url": (
-                'https://www.flickr.com/people/{user_id}/{photo_id}'
+                'https://www.flickr.com/photos/{user_id}/{photo_id}'
                 .format(user_id=uid, photo_id=meta['id'])
             )
         }
