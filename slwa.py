@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import shutil
 from os.path import exists, basename, splitext
 
 import six
@@ -64,7 +65,11 @@ def get_index(query):
         ix = open_dir('indexdir')
     else:
         os.mkdir('indexdir')
-        ix = generate_index()
+        try:
+            ix = generate_index()
+        except Exception:
+            shutil.rmtree('indexdir', ignore_errors=True)
+            raise
 
     with ix.searcher() as searcher:
         query = QueryParser('title', ix.schema).parse(query)
