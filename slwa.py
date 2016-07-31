@@ -4,6 +4,8 @@ import os
 import sys
 import json
 import shutil
+from collections import defaultdict
+from six.moves.urllib.parse import urlparse
 from os.path import exists, basename, splitext
 
 import six
@@ -25,6 +27,14 @@ if not exists(FILENAME):
         fh.write(requests.get(URL).content)
 
 
+def load_df():
+    df = pd.read_csv(FILENAME, encoding='latin1')
+    df['URLS for images'] = df['URLS for images'].str.split(';')
+    df = df[~df['URLS for images'].isnull()]
+
+    return df
+
+
 def generate_index():
     schema = Schema(
         title=TEXT(stored=True),
@@ -34,17 +44,13 @@ def generate_index():
     )
     ix = create_in("indexdir", schema)
     writer = ix.writer()
-    df = pd.read_csv(FILENAME, encoding='latin1')
 
-    df['URLS for images'] = df['URLS for images'].str.split(';')
-
-    for _, row in df.iterrows():
+    for _, row in load_df().iterrows():
         urls = row["URLS for images"]
-        if not isinstance(urls, list):
-            continue
 
         image = get_image(urls)
-        assert image
+        if not image:
+            continue
 
         description = row.Summary
         if pd.isnull(description):
@@ -82,11 +88,27 @@ def get_index(query):
 
 
 def get_image(images):
-    for image in images:
-        if splitext(image)[1] == '.jpg':
-            return image
 
-    return images[0]
+    exts = defaultdict(list)
+
+    for image in images:
+        ext = splitext(image)[1]
+
+        if urlparse(image).hostname == 'purl.slwa.wa.gov.au' and ext == '':
+            continue
+
+        exts[ext].append(image)
+
+    if '.jpg' in exts:
+        return exts['.jpg'][0]
+
+    if '.png' in exts:
+        return exts['.png'][0]
+
+    for key in exts:
+        return exts[key][0]
+
+    return None
 
 
 def main(query=sys.argv[1]):
